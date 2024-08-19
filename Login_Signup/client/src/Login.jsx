@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import axios from 'axios'; // Import axios
-import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import { useNavigate } from 'react-router-dom';
+import Game from "./Game";
+ // Import useNavigate from react-router-dom
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -14,7 +16,7 @@ function Login() {
             .then(response => {
                 console.log(response);
                 if(response.data==='Success')
-                navigate('./home')
+                navigate(<Game/>)
                 // Handle successful login, e.g., redirect user, store token, etc.
             })
             .catch(err => console.log(err));
