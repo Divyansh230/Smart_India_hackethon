@@ -16,7 +16,7 @@ function Login() {
             .then(response => {
                 console.log(response);
                 if(response.data==='Success')
-                navigate(<Game/>)
+                navigate('/game')
                 // Handle successful login, e.g., redirect user, store token, etc.
             })
             .catch(err => console.log(err));

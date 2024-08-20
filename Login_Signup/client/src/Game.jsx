@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import './Game.css'
-function RandomNumberGenerator() {
-  const [randomNumber , setRandomNumber] = useState('');
+import './Game.css';
+
+function Game() {
+  const [randomNumber, setRandomNumber] = useState('');
   const [userInput, setUserInput] = useState('');
   const [isCorrect, setIsCorrect] = useState(false);
 
@@ -12,7 +13,7 @@ function RandomNumberGenerator() {
 
   const handleUserInput = (e) => {
     setUserInput(e.target.value);
-  }; v 
+  };
 
   const checkCaptcha = () => {
     if (userInput === randomNumber) {
@@ -24,15 +25,26 @@ function RandomNumberGenerator() {
 
   return (
     <div className="container">
-      <h1>Random Number Generator Captcha</h1>
-      <button onClick={generateRandomNumber}>Generate Random Number</button>
+      <h1 className="heading">Random Number Generator Captcha</h1>
+      <div className="wrapper">
+        <button onClick={generateRandomNumber}>Generate</button>
+      </div>
       <p>Random Number: {randomNumber}</p>
-      <input type="text" value={userInput} onChange={handleUserInput} />
-      <button onClick={checkCaptcha}>Submit</button>
+      <div className="wrapper">
+        <input 
+          type="text" 
+          value={userInput} 
+          onChange={handleUserInput} 
+          placeholder="Enter the number"
+        />
+      </div>
+      <div className="wrapper">
+        <button onClick={checkCaptcha}>Submit</button>
+      </div>
       {isCorrect && (
-        <p>
+        <p className="heading">
           Correct! You can now proceed to the next page.
-          <a href="/home">Next Page</a>
+          <a href="/home"> Next Page</a>
         </p>
       )}
     </div>
