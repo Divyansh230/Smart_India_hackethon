@@ -1,0 +1,19 @@
+/* src/components/Announcements.css */
+.announcements {
+    padding: 50px 20px;
+    background-color: #e9ecef;
+  }
+  
+  .announcements ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .announcements li {
+    background-color: #fff;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  

@@ -1,0 +1,54 @@
+/* src/components/Services.css */
+
+.services {
+    padding: 50px 20px;
+    background-color: #f8f8f8;
+    text-align: center;
+  }
+  
+  .services h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  .services-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .service-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    transform: perspective(1000px) translateZ(0);
+  }
+  
+  .service-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #138781;
+  }
+  
+  .service-item p {
+    color: #555;
+    font-size: 1rem;
+  }
+  
+  /* Hover Effects */
+  .service-item:hover {
+    transform: scale(1.1) perspective(1000px) translateZ(20px); /* Increases size and gives a 3D bulging effect */
+    background-color: #138781; /* Changes background color on hover */
+    color: #fff; /* Changes text color on hover */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Adds a more prominent shadow */
+  }
+  
+  .service-item:hover h3,
+  .service-item:hover p {
+    color: #fff; /* Changes text color inside the service item on hover */
+  }
+  

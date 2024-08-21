@@ -1,0 +1,34 @@
+/* src/components/Slideshow.css */
+
+.slideshow {
+    width: 80%;
+    margin: 0 auto;
+    padding: 50px 0;
+  }
+  
+  .slide {
+    position: relative;
+    text-align: center;
+    color: #fff;
+    padding: 10px; /* Add padding around each slide */
+  }
+  
+  .slide img {
+    width: 100%; /* Decrease width of the images */
+    border-radius: 10px;
+    max-height: 550px; /* Set a max height for images */
+    display: block; /* Make the image a block element */
+    margin: 0 auto; /* Center the image horizontally */
+  }
+  
+  .slide h3 {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.5rem;
+  }
+  
