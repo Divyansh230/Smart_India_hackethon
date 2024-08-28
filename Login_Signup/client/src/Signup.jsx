@@ -1,25 +1,22 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
 
 function Signup() {
     const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate=useNavigate()
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission logic here, e.g., send data to an API
-        axios.post('http://localhost:3001/register', { name, email, password })
+        axios.post('http://localhost:3001/register', { name, number, email, password })
             .then(response => {
                 console.log(response);
-                navigate('/login')
-                // Handle successful signup, e.g., redirect user, display success message, etc.
+                navigate('/login', { state: { email: email } }); // Pass email to OTP verification page
             })
             .catch(err => console.log(err));
-            
     };
 
     return (
@@ -28,9 +25,7 @@ function Signup() {
                 <h2>Signup</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="name">
-                            <strong>Name</strong>
-                        </label>
+                        <label htmlFor="name"><strong>Name</strong></label>
                         <input
                             type="text"
                             placeholder="Enter name"
@@ -42,9 +37,19 @@ function Signup() {
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="email">
-                            <strong>Email</strong>
-                        </label>
+                        <label htmlFor="number"><strong>Contact No</strong></label>
+                        <input
+                            type="text"
+                            placeholder="Enter number"
+                            autoComplete="off"
+                            name="number"
+                            className="form-control rounded-0"
+                            value={number}
+                            onChange={(e) => setNumber(e.target.value)}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="email"><strong>Email</strong></label>
                         <input
                             type="email"
                             placeholder="Enter email"
@@ -56,9 +61,7 @@ function Signup() {
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="password">
-                            <strong>Password</strong>
-                        </label>
+                        <label htmlFor="password"><strong>Password</strong></label>
                         <input
                             type="password"
                             placeholder="Enter Password"

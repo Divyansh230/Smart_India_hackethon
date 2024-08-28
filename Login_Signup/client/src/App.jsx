@@ -5,6 +5,7 @@ import Login from './Login';
 import Home from './Home';
 import Game from './Game';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import OTPVerification from './OTPVerification';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home/>}/>
           <Route path="/game" element={<Game/>}/>
+          <Route path="/verify" element={<OTPVerification/>}/>
         </Routes>
       </BrowserRouter>
     </>

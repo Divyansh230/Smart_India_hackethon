@@ -11,7 +11,7 @@ import './Home.css';
 
 function Home() {
   return (
-    <div className="App">
+    <div className="homepage">
       <div><Header />
       <Banner />
       <Slideshow/>

@@ -1,23 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
-import axios from 'axios'; // Import axios
-import { useNavigate } from 'react-router-dom';
-import Game from "./Game";
- // Import useNavigate from react-router-dom
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate=useNavigate()
+    const navigate = useNavigate();
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle login submission logic here, e.g., authenticate the user
         axios.post('http://localhost:3001/login', { email, password })
             .then(response => {
-                console.log(response);
-                if(response.data==='Success')
-                navigate('/game')
-                // Handle successful login, e.g., redirect user, store token, etc.
+                if (response.data === 'OTP Sent') {
+                    navigate('/verify', { state: { email: email } }); // Pass email to OTP verification page
+                } else {
+                    alert(response.data); // Handle other responses like 'Invalid Password'
+                }
             })
             .catch(err => console.log(err));
     };
@@ -28,9 +26,7 @@ function Login() {
                 <h2>Login</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="email">
-                            <strong>Email</strong>
-                        </label>
+                        <label htmlFor="email"><strong>Email</strong></label>
                         <input
                             type="email"
                             placeholder="Enter email"
@@ -42,9 +38,7 @@ function Login() {
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="password">
-                            <strong>Password</strong>
-                        </label>
+                        <label htmlFor="password"><strong>Password</strong></label>
                         <input
                             type="password"
                             placeholder="Enter Password"
