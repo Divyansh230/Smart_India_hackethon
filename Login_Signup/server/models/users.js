@@ -1,4 +1,3 @@
-// models/UserModel.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -19,13 +18,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    otp: {
+    address: {
         type: String,
-        required: false,
-    },
-    otpExpires: {
-        type: Date,
-        required: false,
+        required: true, // Set this to true if the address is mandatory
     },
 });
 

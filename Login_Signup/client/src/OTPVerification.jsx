@@ -14,7 +14,7 @@ function OTPVerification() {
         axios.post('http://localhost:3001/verify-otp', { email, otp })
             .then(response => {
                 if (response.data === 'Success') {
-                    navigate('/game'); // Navigate to the game page or dashboard after successful OTP verification
+                    navigate('/home'); // Navigate to the game page or dashboard after successful OTP verification
                 } else {
                     alert('Invalid or Expired OTP');
                 }

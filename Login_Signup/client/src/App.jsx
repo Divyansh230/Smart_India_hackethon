@@ -6,17 +6,21 @@ import Home from './Home';
 import Game from './Game';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import OTPVerification from './OTPVerification';
+import Landing from './Landing';
+import MouseTracker from './MouseTracker';
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Signup />} />
+          <Route path="/" element={<Landing/>}/>
+          <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home/>}/>
           <Route path="/game" element={<Game/>}/>
           <Route path="/verify" element={<OTPVerification/>}/>
+          <Route path="/MouseTracker" element={<MouseTracker></MouseTracker>}/>
         </Routes>
       </BrowserRouter>
     </>

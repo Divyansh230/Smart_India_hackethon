@@ -7,14 +7,36 @@ function Signup() {
     const [number, setNumber] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [address, setAddress] = useState('');
+    const [passwordError, setPasswordError] = useState(''); // State for password error message
     const navigate = useNavigate();
+
+    const validatePassword = (password) => {
+        const lengthValid = password.length >= 10 && password.length <= 12;
+        const specialCharValid = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        const digitValid = /\d/.test(password);
+
+        if (!lengthValid) {
+            return "Password must be between 10-12 characters long.";
+        } else if (!specialCharValid) {
+            return "Password must contain at least one special character.";
+        } else if (!digitValid) {
+            return "Password must contain at least one digit.";
+        }
+        return "";
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3001/register', { name, number, email, password })
+        const errorMessage = validatePassword(password);
+        if (errorMessage) {
+            setPasswordError(errorMessage); // Display the error message
+            return;
+        }
+        axios.post('http://localhost:3001/register', { name, number, email, password, address })
             .then(response => {
                 console.log(response);
-                navigate('/login', { state: { email: email } }); // Pass email to OTP verification page
+                navigate('/login', { state: { email: email } }); // Redirect to login page
             })
             .catch(err => console.log(err));
     };
@@ -34,6 +56,7 @@ function Signup() {
                             className="form-control rounded-0"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            required
                         />
                     </div>
                     <div className="mb-3">
@@ -46,6 +69,7 @@ function Signup() {
                             className="form-control rounded-0"
                             value={number}
                             onChange={(e) => setNumber(e.target.value)}
+                            required
                         />
                     </div>
                     <div className="mb-3">
@@ -58,6 +82,7 @@ function Signup() {
                             className="form-control rounded-0"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
                     </div>
                     <div className="mb-3">
@@ -69,6 +94,21 @@ function Signup() {
                             className="form-control rounded-0"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        {passwordError && <div className="text-danger">{passwordError}</div>} {/* Display error */}
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="address"><strong>Address</strong></label>
+                        <input
+                            type="text"
+                            placeholder="Enter address"
+                            autoComplete="off"
+                            name="address"
+                            className="form-control rounded-0"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            required
                         />
                     </div>
                     <button type="submit" className="btn btn-success w-100 rounded-0">
