@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import Home from './Home';
 
 const KeyboardTracker = () => {
   const [inputData, setInputData] = useState([]);
@@ -110,9 +112,14 @@ const KeyboardTracker = () => {
         onChange={(e) => setTypedText(e.target.value)}
         placeholder="Type something..."
       />
-      <p>{isHuman === null ? 'Type to detect...' : isHuman ? 'Human Detected' : 'Bot Detected'}</p>
+      <p>{isHuman === null ? 'Type to detect...' : isHuman ? 
+      <p>Human Detected <Link to="/home">Home</Link></p> : 
+      <p>
+      'Bot Detected'
+      <Link to="/">Back</Link>
+      </p>}</p>
     </div>
   );
 };
 
-export default App;
+export default KeyboardTracker;

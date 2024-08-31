@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Home from './Home';
+import KeyboardTracker from './KeyboardTracker';
 import { Link } from 'react-router-dom';
 
 const MouseTracker = () => {
@@ -87,7 +88,7 @@ const MouseTracker = () => {
         
         <p style={{ color: 'green' }}>You are a Human!
 
-        <Link to="/home">Home</Link>
+        <Link to="/KeyboardTracker">KeyboardTracker</Link>
         </p>
         
       ) : (

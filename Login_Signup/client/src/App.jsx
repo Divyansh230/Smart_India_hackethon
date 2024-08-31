@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import OTPVerification from './OTPVerification';
 import Landing from './Landing';
 import MouseTracker from './MouseTracker';
+import KeyboardTracker from './KeyboardTracker';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/game" element={<Game/>}/>
           <Route path="/verify" element={<OTPVerification/>}/>
           <Route path="/MouseTracker" element={<MouseTracker></MouseTracker>}/>
+          <Route path="/KeyboardTracker" element={<KeyboardTracker></KeyboardTracker>}/>
         </Routes>
       </BrowserRouter>
     </>

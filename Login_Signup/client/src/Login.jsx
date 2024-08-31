@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import MouseTracker from "./MouseTracker";
+import Home from "./Home";
+import KeyboardTracker from "./KeyboardTracker";
 
 const GoogleMapEmbed = ({ liveLocation }) => {
   const [mapSrc, setMapSrc] = useState('');
@@ -12,8 +14,9 @@ const GoogleMapEmbed = ({ liveLocation }) => {
       setMapSrc(`https://maps.google.com/maps?width=600&height=500&hl=en&q=${latitude},${longitude}&t=&z=13&ie=UTF8&iwloc=B&output=embed`);
     }
   }, [liveLocation]);
+  
 
-  return (
+    return (
     <div className="mapouter" style={{ position: 'relative', textAlign: 'right', width: '600px', height: '500px' }}>
       <div className="gmap_canvas" style={{ overflow: 'hidden', background: 'none !important', width: '600px', height: '500px' }}>
         {mapSrc && (
@@ -40,6 +43,7 @@ function Login() {
   const [liveLocation, setLiveLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
   const [loginAttempts, setLoginAttempts] = useState(0); // State to track login attempts
+  const [lastTypedTime, setLastTypedTime] = useState(null); // Track the time of last typing
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,6 +64,11 @@ function Login() {
     }
   }, []);
 
+  const handleInputChange = (setter) => (e) => {
+    setter(e.target.value);
+    setLastTypedTime(Date.now()); // Update the last typed time on input change
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -78,12 +87,23 @@ function Login() {
       alert('Address is required');
       return;
     }
+
+    const timeNow = Date.now();
+    console.log(timeNow);
+    const timeDifference = (timeNow - lastTypedTime) / 1000; // Time difference in seconds
+    console.log(lastTypedTime);
+    console.log(timeDifference);
+
+    if (timeDifference > 2) {
+      alert("Bot detected: Too much time spent before submission.");
+      navigate('/');
+      return;
+    }
     
     axios.post('http://localhost:3001/login', { email, password, address })
       .then(response => {
         console.log(response.data.message);
         if (response.data.message === 'Login Successful') {
-          
           navigate('/MouseTracker', { state: { email } }); // Redirect to homepage with email state
         } else {
           alert(response.data); // Handle invalid password or other responses
@@ -111,7 +131,7 @@ function Login() {
                 name="email"
                 className="form-control rounded-0"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleInputChange(setEmail)}
                 required
               />
             </div>
@@ -123,7 +143,7 @@ function Login() {
                 name="password"
                 className="form-control rounded-0"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleInputChange(setPassword)}
                 required
               />
             </div>
@@ -135,7 +155,7 @@ function Login() {
                 name="address"
                 className="form-control rounded-0"
                 value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                onChange={handleInputChange(setAddress)}
                 required
               />
             </div>
