@@ -41,7 +41,7 @@ function Login() {
   const [mouseData, setMouseData] = useState([]);
   const [inputData, setInputData] = useState([]);
   const [isHuman, setIsHuman] = useState(null);
-  const [geolocationLoaded, setGeolocationLoaded] = useState(false); // For geolocation status
+  const [geolocationLoaded, setGeolocationLoaded] = useState(false);
   const navigate = useNavigate();
 
   // Geolocation fetch
@@ -52,7 +52,7 @@ function Login() {
           const { latitude, longitude } = position.coords;
           setLiveLocation({ latitude, longitude });
           setLocationError(null);
-          setGeolocationLoaded(true); // Mark geolocation as loaded
+          setGeolocationLoaded(true);
         },
         (error) => {
           console.error("Error fetching location: ", error);
@@ -63,154 +63,6 @@ function Login() {
       setLocationError("Geolocation is not supported by this browser.");
     }
   }, []);
-
-  // Mouse movement tracking
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      const { clientX, clientY, timeStamp } = e;
-      setMouseData((prevData) => [
-        ...prevData,
-        { x: clientX, y: clientY, time: timeStamp },
-      ]);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
-  // Keyboard input tracking
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      const currentTime = Date.now();
-      setInputData((prevData) => [
-        ...prevData,
-        {
-          key: event.key,
-          type: 'keydown',
-          time: currentTime,
-        },
-      ]);
-    };
-
-    const handleKeyUp = (event) => {
-      const currentTime = Date.now();
-      setInputData((prevData) => [
-        ...prevData,
-        {
-          key: event.key,
-          type: 'keyup',
-          time: currentTime,
-        },
-      ]);
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
-
-  // Analyze mouse and keyboard data
-  useEffect(() => {
-    if (mouseData.length > 50 && inputData.length > 20 && geolocationLoaded) {
-      setIsHuman(detectHumanOrBot(mouseData, inputData));
-    }
-  }, [mouseData, inputData, geolocationLoaded]);
-
-  const detectHumanOrBot = (mouseData, inputData) => {
-    const mouseResult = analyzeMouseData(mouseData);
-    const keyboardResult = analyzeKeyboardData(inputData);
-    return mouseResult && keyboardResult;
-  };
-
-  const analyzeMouseData = (data) => {
-    const { speeds, accelerations } = calculateMouseFeatures(data);
-
-    const speedVariance = speeds.reduce((a, b) => a + Math.abs(b - speeds[0]), 0);
-    const accelerationVariance = accelerations.reduce(
-      (a, b) => a + Math.abs(b - accelerations[0]),
-      0
-    );
-
-    return (speedVariance > 0.1 && accelerationVariance > 0.01);
-  };
-
-  const analyzeKeyboardData = (data) => {
-    const { wpm, pressDurations, intervalTimes } = calculateKeyboardFeatures(data);
-
-    const pressVariance = calculateVariance(pressDurations);
-    const intervalVariance = calculateVariance(intervalTimes);
-
-    return (wpm < 80 && pressVariance > 0.05 && intervalVariance > 0.05);
-  };
-
-  const calculateMouseFeatures = (data) => {
-    if (data.length < 2) return { speeds: [], accelerations: [] };
-
-    const speeds = [];
-    const accelerations = [];
-
-    for (let i = 1; i < data.length; i++) {
-      const dx = data[i].x - data[i - 1].x;
-      const dy = data[i].y - data[i - 1].y;
-      const dt = data[i].time - data[i - 1].time;
-      const speed = Math.sqrt(dx * dx + dy * dy) / dt;
-
-      speeds.push(speed);
-
-      if (i > 1) {
-        const acceleration =
-          (speed - speeds[i - 2]) / (data[i].time - data[i - 2].time);
-        accelerations.push(acceleration);
-      }
-    }
-
-    return { speeds, accelerations };
-  };
-
-  const calculateKeyboardFeatures = (data) => {
-    const keyDownTimes = {};
-    const pressDurations = [];
-    const intervalTimes = [];
-    let lastKeyTime = null;
-    let totalCharacters = 0;
-    let startTime = data[0].time;
-    let endTime = data[data.length - 1].time;
-
-    data.forEach((event) => {
-      if (event.type === 'keydown') {
-        keyDownTimes[event.key] = event.time;
-      } else if (event.type === 'keyup' && keyDownTimes[event.key]) {
-        const pressDuration = event.time - keyDownTimes[event.key];
-        pressDurations.push(pressDuration);
-        delete keyDownTimes[event.key];
-
-        if (lastKeyTime) {
-          const intervalTime = event.time - lastKeyTime;
-          intervalTimes.push(intervalTime);
-        }
-        lastKeyTime = event.time;
-        totalCharacters++;
-      }
-    });
-
-    const timeElapsedMinutes = (endTime - startTime) / (1000 * 60);
-    const wpm = (totalCharacters / 5) / timeElapsedMinutes;
-
-    return { wpm, pressDurations, intervalTimes };
-  };
-
-  const calculateVariance = (values) => {
-    if (values.length === 0) return 0;
-    const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
-    return values.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / values.length;
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -248,8 +100,13 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-evenly bg-gray-100 py-12 px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md space-y-8">
+    <div 
+      className="min-h-screen flex items-center justify-evenly bg-cover bg-center bg-no-repeat py-12 px-6 lg:px-8"
+      style={{ 
+        backgroundImage: "url('src/WhatsApp Image 2024-09-13 at 23.16.31_b2970948.jpg')" 
+      }}
+    >
+      <div className="max-w-md w-full bg-white bg-opacity-50 p-8 rounded-lg shadow-md space-y-8">
         <h2 className="text-center text-3xl font-extrabold text-gray-900">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -303,20 +160,19 @@ function Login() {
           <p className="text-center text-sm text-red-600">Bot detected, you will be redirected.</p>
         )}
 
-
         <div className="text-center text-sm text-gray-600">
           <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">Don't have an account? Sign up here</Link>
         </div>
       </div>
-      <div class="w-[600px] h-[600px] pt-20">
-      {liveLocation && (
+
+      <div className="w-[600px] h-[600px] pt-20">
+        {liveLocation && (
           <div className="mt-8">
             <GoogleMapEmbed liveLocation={liveLocation} />
           </div>
         )}
-        </div>
+      </div>
     </div>
-
   );
 }
 
