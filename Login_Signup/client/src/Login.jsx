@@ -2,35 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-const GoogleMapEmbed = ({ liveLocation }) => {
-  const [mapSrc, setMapSrc] = useState('');
-
-  useEffect(() => {
-    if (liveLocation) {
-      const { latitude, longitude } = liveLocation;
-      setMapSrc(`https://maps.google.com/maps?width=600&height=500&hl=en&q=${latitude},${longitude}&t=&z=13&ie=UTF8&iwloc=B&output=embed`);
-    }
-  }, [liveLocation]);
-
-  return (
-    <div className="relative w-full max-w-3xl mx-auto">
-      <div className="overflow-hidden rounded-lg shadow-lg">
-        {mapSrc && (
-          <iframe
-            className="w-full h-96"
-            frameBorder="0"
-            scrolling="no"
-            marginHeight="0"
-            marginWidth="0"
-            src={mapSrc}
-            title="Google Map"
-          ></iframe>
-        )}
-      </div>
-    </div>
-  );
-};
-
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,10 +9,9 @@ function Login() {
   const [liveLocation, setLiveLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
   const [loginAttempts, setLoginAttempts] = useState(0);
-  const [mouseData, setMouseData] = useState([]);
-  const [inputData, setInputData] = useState([]);
   const [isHuman, setIsHuman] = useState(null);
-  const [geolocationLoaded, setGeolocationLoaded] = useState(false);
+  const [emailKeyEvents, setEmailKeyEvents] = useState([]);
+  const [passwordKeyEvents, setPasswordKeyEvents] = useState([]);
   const navigate = useNavigate();
 
   // Geolocation fetch
@@ -52,7 +22,6 @@ function Login() {
           const { latitude, longitude } = position.coords;
           setLiveLocation({ latitude, longitude });
           setLocationError(null);
-          setGeolocationLoaded(true);
         },
         (error) => {
           console.error("Error fetching location: ", error);
@@ -63,6 +32,81 @@ function Login() {
       setLocationError("Geolocation is not supported by this browser.");
     }
   }, []);
+
+  // Event listeners for keydown and keyup for email field
+  useEffect(() => {
+    const handleEmailKeyDown = (event) => {
+      setEmailKeyEvents((prevData) => [
+        ...prevData,
+        { type: 'keydown', time: Date.now() },
+      ]);
+    };
+
+    const handleEmailKeyUp = (event) => {
+      setEmailKeyEvents((prevData) => [
+        ...prevData,
+        { type: 'keyup', time: Date.now() },
+      ]);
+    };
+
+    const emailField = document.getElementById('email');
+    emailField.addEventListener('keydown', handleEmailKeyDown);
+    emailField.addEventListener('keyup', handleEmailKeyUp);
+
+    return () => {
+      emailField.removeEventListener('keydown', handleEmailKeyDown);
+      emailField.removeEventListener('keyup', handleEmailKeyUp);
+    };
+  }, []);
+
+  // Event listeners for keydown and keyup for password field
+  useEffect(() => {
+    const handlePasswordKeyDown = (event) => {
+      setPasswordKeyEvents((prevData) => [
+        ...prevData,
+        { type: 'keydown', time: Date.now() },
+      ]);
+    };
+
+    const handlePasswordKeyUp = (event) => {
+      setPasswordKeyEvents((prevData) => [
+        ...prevData,
+        { type: 'keyup', time: Date.now() },
+      ]);
+    };
+
+    const passwordField = document.getElementById('password');
+    passwordField.addEventListener('keydown', handlePasswordKeyDown);
+    passwordField.addEventListener('keyup', handlePasswordKeyUp);
+
+    return () => {
+      passwordField.removeEventListener('keydown', handlePasswordKeyDown);
+      passwordField.removeEventListener('keyup', handlePasswordKeyUp);
+    };
+  }, []);
+
+  // Calculate typing speed
+  const calculateTypingSpeed = (keyEvents) => {
+    if (keyEvents.length < 2) return 0;
+
+    const totalCharacters = keyEvents.filter(event => event.type === 'keyup').length;
+    const startTime = keyEvents[0].time;
+    const endTime = keyEvents[keyEvents.length - 1].time;
+    const timeElapsedMinutes = (endTime - startTime) / (1000 * 60);
+    return (totalCharacters / 5) / timeElapsedMinutes;
+  };
+
+  // Detect if human or bot based on typing speed
+  useEffect(() => {
+    const emailWPM = calculateTypingSpeed(emailKeyEvents);
+    const passwordWPM = calculateTypingSpeed(passwordKeyEvents);
+
+    if (emailWPM > 100 || passwordWPM > 100) {
+      setIsHuman(false); // Likely bot
+    } else if (emailKeyEvents.length > 0 && passwordKeyEvents.length > 0) {
+      setIsHuman(true); // Likely human
+    }
+  }, [emailKeyEvents, passwordKeyEvents]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -101,12 +145,12 @@ function Login() {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-evenly bg-cover bg-center bg-no-repeat py-12 px-6 lg:px-8"
+      className="min-h-screen flex items-center justify-start bg-cover bg-center bg-no-repeat py-12 px-6 lg:px-10"
       style={{ 
         backgroundImage: "url('src/WhatsApp Image 2024-09-13 at 23.16.31_b2970948.jpg')" 
       }}
     >
-      <div className="max-w-md w-full bg-white bg-opacity-50 p-8 rounded-lg shadow-md space-y-8">
+      <div className="max-w-md w-full bg-white bg-opacity-50 p-8 rounded-lg shadow-md space-y-8 ml-20">
         <h2 className="text-center text-3xl font-extrabold text-gray-900">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -163,14 +207,6 @@ function Login() {
         <div className="text-center text-sm text-gray-600">
           <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">Don't have an account? Sign up here</Link>
         </div>
-      </div>
-
-      <div className="w-[600px] h-[600px] pt-20">
-        {liveLocation && (
-          <div className="mt-8">
-            <GoogleMapEmbed liveLocation={liveLocation} />
-          </div>
-        )}
       </div>
     </div>
   );
